@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { WalletConnect } from './components/WalletConnect';
 import { SiwfLogin } from './components/SiwfLogin';
 import { useWallet } from './hooks/useWallet';
+import { initializeSiwfCallback } from './utils/siwf';
 import './App.css';
 
 function App() {
@@ -11,6 +13,22 @@ function App() {
   
   // Create a unique key based on wallet state to force re-rendering on wallet changes
   const walletKey = `${wallet.walletType || 'none'}-${wallet.account || 'none'}-${wallet.isConnected}-${rerenderCounter}`;
+
+  // Initialize SIWF callback handling on mount
+  useEffect(() => {
+    initializeSiwfCallback(
+      (result) => {
+        console.log('✅ SIWF authentication successful:', result);
+        toast.success('SIWF authentication completed!');
+        // Handle the successful authentication result
+        // You can store the result in state or redirect to another page
+      },
+      (error) => {
+        console.error('❌ SIWF authentication failed:', error);
+        toast.error('SIWF authentication failed: ' + error.message);
+      }
+    );
+  }, []);
 
   // Force re-render when wallet state changes
   useEffect(() => {
@@ -67,14 +85,14 @@ function App() {
       <footer className="app-footer">
         <div className="container">
           <p className="footer-text">
-            Built with SIWF Embedded Wallet SDK • 
+            Built with Custom SIWF v2 Implementation • 
             <a 
-              href="https://projectlibertylabs.github.io/siwf/v2/docs/QuickStart.html" 
+              href="https://projectlibertylabs.github.io/siwf/v2/docs/" 
               target="_blank" 
               rel="noopener noreferrer"
               className="footer-link"
             >
-              Documentation
+              SIWF Documentation
             </a>
           </p>
         </div>
