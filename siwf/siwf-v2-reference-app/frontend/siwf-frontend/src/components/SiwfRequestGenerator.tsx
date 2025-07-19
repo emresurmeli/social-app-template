@@ -118,18 +118,20 @@ export const SiwfRequestGenerator: React.FC<SiwfRequestGeneratorProps> = ({
 
   return (
     <div className="siwf-generator">
-      <div className="card">
-        <div className="card-header">
+      <div className="frequency-card">
+        <div className="frequency-card-header">
           <h2 className="card-title">
             <Settings className="icon" />
-            SIWF Request Generator
+            <span className="responsive-hide-phone">SIWF Request Generator</span>
+            <span className="responsive-show-phone">Request Generator</span>
           </h2>
           <p className="card-description">
-            Generate a signed request for SIWF authentication
+            <span className="responsive-hide-phone">Generate a signed request for SIWF authentication</span>
+            <span className="responsive-show-phone">Generate SIWF request</span>
           </p>
         </div>
 
-        <div className="card-content">
+        <div className="frequency-card-content">
           <div className="form-section">
             {/* Wallet Status */}
             {walletInfo ? (

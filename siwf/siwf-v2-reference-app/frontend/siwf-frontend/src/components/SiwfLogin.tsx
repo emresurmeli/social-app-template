@@ -139,55 +139,184 @@ export const SiwfLogin: React.FC = () => {
     }
   };
 
+  const getShortAddress = (address: string) => {
+    // Responsive address display - show more on larger screens
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile) {
+      return `${address.slice(0, 6)}...${address.slice(-4)}`;
+    } else {
+      return `${address.slice(0, 8)}...${address.slice(-6)}`;
+    }
+  };
+
   return (
     <div className="siwf-login">
-      <div className={`card ${isResetting ? 'component-resetting' : ''}`}>
-        <div className="card-header">
+      <div className={`frequency-card ${isResetting ? 'frequency-animate-fade-in' : ''}`}>
+        <div className="frequency-card-header">
           <h2 className="card-title">
             <Key className="icon" />
-            Sign In With Frequency
-            {isResetting && <RefreshCw className="icon spinning reset-indicator" />}
-            <span className="debug-key" title={`Component Key: ${componentKey}`}>#{componentKey}</span>
+            <span className="responsive-hide-phone">Sign In With Frequency</span>
+            <span className="responsive-show-phone">SIWF</span>
+            {isResetting && <RefreshCw className="icon frequency-animate-spin" style={{ color: 'var(--warning)' }} />}
+            <span 
+              className="debug-key responsive-hide-phone" 
+              title={`Component Key: ${componentKey}`}
+              style={{
+                fontSize: '10px',
+                background: 'var(--warning)',
+                color: 'white',
+                padding: '2px 6px',
+                borderRadius: '4px',
+                marginLeft: 'auto',
+                fontWeight: 'bold'
+              }}
+            >
+              #{componentKey}
+            </span>
           </h2>
           <p className="card-description">
-            Generate and use SIWF authentication requests
+            <span className="responsive-hide-phone">Generate and use SIWF authentication requests</span>
+            <span className="responsive-show-phone">Generate SIWF authentication</span>
           </p>
         </div>
 
-        <div className="card-content">
+        <div className="frequency-card-content">
           {!wallet.isConnected ? (
-            <div className="not-connected">
-              <AlertTriangle className="icon" />
-              <p className="warning">Connect your wallet to see connected account info</p>
-              <p className="info">You can still generate SIWF requests without a connected wallet.</p>
+            <div 
+              className="not-connected"
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                textAlign: 'center',
+                padding: 'var(--space-4)',
+                backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                border: '1px solid rgba(245, 158, 11, 0.2)',
+                borderRadius: 'var(--radius-md)',
+                marginBottom: 'var(--space-6)'
+              }}
+            >
+              <AlertTriangle 
+                size={window.innerWidth <= 768 ? 20 : 24} 
+                style={{ 
+                  color: 'var(--warning)', 
+                  marginBottom: 'var(--space-2)' 
+                }} 
+              />
+              <p style={{ 
+                margin: '0 0 var(--space-2) 0',
+                color: 'var(--warning)',
+                fontWeight: '500',
+                fontSize: 'var(--text-sm)'
+              }}>
+                <span className="responsive-hide-phone">Connect your wallet to see connected account info</span>
+                <span className="responsive-show-phone">Connect wallet for account info</span>
+              </p>
+              <p style={{ 
+                margin: '0',
+                color: 'var(--text-secondary)',
+                fontSize: 'var(--text-xs)'
+              }}>
+                <span className="responsive-hide-phone">You can still generate SIWF requests without a connected wallet.</span>
+                <span className="responsive-show-phone">You can still generate SIWF requests.</span>
+              </p>
             </div>
           ) : (
-            <div className="wallet-info-section">
-              <h3>Connected Wallet</h3>
-              <div className="wallet-display">
-                <div className="wallet-type">
-                  <strong>Type:</strong> {getWalletDisplayName()}
+            <div 
+              style={{
+                padding: 'var(--space-4)',
+                backgroundColor: 'var(--bg-tertiary)',
+                border: '1px solid var(--border-light)',
+                borderRadius: 'var(--radius-md)',
+                marginBottom: 'var(--space-6)'
+              }}
+            >
+              <h3 style={{ 
+                margin: '0 0 var(--space-3) 0',
+                fontSize: 'var(--text-lg)',
+                fontWeight: '600',
+                color: 'var(--text-primary)',
+                textAlign: 'center'
+              }}>
+                <span className="responsive-hide-phone">Connected Wallet</span>
+                <span className="responsive-show-phone">Wallet Info</span>
+              </h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+                <div style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: 'var(--space-2)',
+                  fontSize: 'var(--text-sm)',
+                  justifyContent: window.innerWidth <= 768 ? 'center' : 'flex-start'
+                }}>
+                  <strong style={{ color: 'var(--text-primary)' }}>Type:</strong> 
+                  <span style={{ color: 'var(--text-secondary)' }}>{getWalletDisplayName()}</span>
                 </div>
-                <div className="wallet-address">
-                  <strong>Address:</strong> {wallet.account?.slice(0, 8)}...{wallet.account?.slice(-6)}
+                <div style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: 'var(--space-2)',
+                  fontSize: 'var(--text-sm)',
+                  justifyContent: window.innerWidth <= 768 ? 'center' : 'flex-start',
+                  wordBreak: 'break-all'
+                }}>
+                  <strong style={{ color: 'var(--text-primary)', flexShrink: 0 }}>Address:</strong> 
+                  <code style={{ 
+                    color: 'var(--text-secondary)',
+                    fontSize: 'var(--text-xs)',
+                    background: 'var(--bg-primary)',
+                    padding: 'var(--space-1)',
+                    borderRadius: 'var(--radius-sm)',
+                    border: '1px solid var(--border-light)'
+                  }}>
+                    {wallet.account && getShortAddress(wallet.account)}
+                  </code>
                 </div>
               </div>
             </div>
           )}
 
           {siwfState.error && (
-            <div className="error-section">
-              <div className="error-message">
-                <XCircle className="icon" />
-                {siwfState.error}
+            <div style={{ marginBottom: 'var(--space-6)' }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 'var(--space-2)',
+                padding: 'var(--space-3) var(--space-4)',
+                backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                color: 'var(--error)',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid rgba(239, 68, 68, 0.2)',
+                fontSize: 'var(--text-sm)'
+              }}>
+                <XCircle size={16} style={{ flexShrink: 0 }} />
+                <span>{siwfState.error}</span>
               </div>
             </div>
           )}
 
           {siwfState.isLoading ? (
-            <div className="loading-section">
-              <Loader className="icon spinning" />
-              <p>Redirecting to SIWF authentication...</p>
+            <div style={{
+              textAlign: 'center',
+              padding: 'var(--space-8)',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 'var(--space-4)'
+            }}>
+              <Loader 
+                size={window.innerWidth <= 768 ? 24 : 32} 
+                className="frequency-animate-spin" 
+                style={{ color: 'var(--frequency-primary)' }}
+              />
+              <p style={{ 
+                margin: 0,
+                color: 'var(--text-secondary)',
+                fontSize: 'var(--text-sm)'
+              }}>
+                <span className="responsive-hide-phone">Redirecting to SIWF authentication...</span>
+                <span className="responsive-show-phone">Redirecting...</span>
+              </p>
             </div>
           ) : (
             <SiwfRequestGenerator 
@@ -199,15 +328,19 @@ export const SiwfLogin: React.FC = () => {
             />
           )}
 
-          {/* Emergency reset button for debugging */}
+          {/* Emergency reset button for debugging - only show on larger screens */}
           {isResetting && (
             <button
               onClick={() => {
                 console.log('🔄 Manual reset triggered');
                 setIsResetting(false);
               }}
-              className="btn btn-secondary"
-              style={{ marginTop: '0.5rem', fontSize: '0.8rem' }}
+              className="frequency-btn frequency-btn-secondary responsive-hide-phone"
+              style={{ 
+                marginTop: 'var(--space-2)', 
+                fontSize: 'var(--text-xs)',
+                padding: 'var(--space-1) var(--space-2)'
+              }}
             >
               Force Reset (Debug)
             </button>
