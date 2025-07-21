@@ -1,8 +1,12 @@
 /* SIWF App Styles with Frequency Design System - Responsive Edition */
 
 html, body {
-  width: 100%;
-  max-width: none;
+  width: 100vw;
+  overflow-x: auto;
+}
+
+#root {
+  width: 100vw;
   overflow-x: auto;
 }
 
@@ -11,8 +15,6 @@ html, body {
   display: flex;
   flex-direction: column;
   background: var(--bg-secondary);
-  width: 100%;
-  max-width: none;
 }
 
 /* ===== RESPONSIVE HEADER STYLES ===== */
@@ -687,7 +689,7 @@ html, body {
 
 /* Wallet Connection Responsive Breakpoints */
 
-/* Phone (up to 768px) */
+Phone (up to 768px)
 @media (max-width: 768px) {
   .connected {
     flex-direction: column;
